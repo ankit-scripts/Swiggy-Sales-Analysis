@@ -89,3 +89,30 @@ HAVING COUNT(*) > 1;
 - These duplicate records require further investigation to determine whether they represent legitimate repeated orders or unintended duplicate entries before proceeding with data modeling and analysis.
 
 ----------------------------------------
+
+
+### Duplicate Removal
+
+**Objective:**  
+Remove redundant duplicate records while preserving a single valid instance of each unique record. This ensures data consistency and prevents duplicate entries from inflating analytical results.
+
+**Approach:**  
+Created a Common Table Expression (CTE) and assigned a unique sequence number to each record using the `ROW_NUMBER()` window function. The rows were partitioned by all columns (`State`, `City`, `Order_Date`, `Restaurant_Name`, `Location`, `Category`, `Dish_Name`, `Price_INR`, `Rating`, and `Rating_Count`). Records with `Row_Num > 1` were identified as duplicates and deleted, retaining only the first occurrence of each unique record.
+
+```sql
+WITH CTE AS (
+             SELECT *, ROW_NUMBER() OVER (
+			 PARTITION BY State, City, Order_Date, Restaurant_Name, Location,
+	         Category, Dish_Name, Price_INR, Rating, Rating_Count
+			 ORDER BY (SELECT NULL))
+AS Row_Num
+FROM swiggy_data)
+DELETE FROM CTE WHERE Row_Num > 1;
+```
+
+**Findings:**  
+- **29 duplicate rows** were successfully removed from the dataset.
+- **One unique record was retained** for each duplicated group, eliminating redundant data while preserving all distinct records.
+- The dataset is now free of duplicate entries and ready for reliable data modeling and analysis.
+
+----------------------------------------
