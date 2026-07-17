@@ -3,8 +3,9 @@ Designed a dimensional data model (Star Schema) and used CTEs, Window Functions,
 
 
 
---Data Cleaning & Validation
---Null Value Check
+## Data Cleaning & Validation
+### Null Value Check
+
 ---sql
 SELECT 
       SUM(CASE WHEN State IS NULL THEN 1 ELSE 0 END) AS "null state",
