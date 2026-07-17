@@ -27,8 +27,8 @@ FROM swiggy_data;
 ```
 
 **Findings:**  
-- ✅ No NULL values were found in any of the selected columns.
-- ✅ The dataset is complete and ready for further data cleaning, transformation, and analysis.
+- No NULL values were found in any of the selected columns.
+- The dataset is complete and ready for further data cleaning, transformation, and analysis.
   
 <img width="1352" height="144" alt="image" src="https://github.com/user-attachments/assets/a4fad1f4-7a05-4ee2-89c1-31e9366e49e7" />
 
@@ -58,6 +58,34 @@ WHERE
 **Measure columns** (such as Price, Rating, and Rating Count) are not included in this check because blank string validation is applicable only to text-based fields.
 
 **Findings:**  
-- ✅ No blank or empty string values were detected in any of the dimension columns.
-- ✅ All dimension attributes are complete and suitable for accurate filtering, grouping, and analysis.
+- No blank or empty string values were detected in any of the dimension columns.
+- All dimension attributes are complete and suitable for accurate filtering, grouping, and analysis.
 
+  ----------------------------------------
+
+### Duplicate Detection
+
+**Objective:**  
+Identify duplicate records by comparing all columns to ensure data integrity and prevent duplicate transactions from impacting aggregations, reporting, and analytical results.
+
+**Approach:**  
+Grouped the dataset by all key business attributes (`State`, `City`, `Order_Date`, `Restaurant_Name`, `Location`, `Category`, `Dish_Name`, `Price_INR`, `Rating`, and `Rating_Count`) and used `COUNT(*)` with a `HAVING COUNT(*) > 1` clause to detect records appearing more than once.
+
+```sql
+SELECT 
+      State, City, Order_Date, Restaurant_Name, Location,
+	  Category, Dish_Name, Price_INR, Rating, Rating_Count,
+	  COUNT(*) AS Duplicate_Count
+FROM swiggy_data
+GROUP BY 
+      State, City, Order_Date, Restaurant_Name, Location,
+	  Category, Dish_Name, Price_INR, Rating, Rating_Count
+HAVING COUNT(*) > 1;
+```
+<img width="2374" height="894" alt="image" src="https://github.com/user-attachments/assets/8629f16f-6948-4397-9b7c-5881ced1b59a" />
+
+**Findings:**  
+- **29 duplicate records** were identified in the dataset.
+- These duplicate records require further investigation to determine whether they represent legitimate repeated orders or unintended duplicate entries before proceeding with data modeling and analysis.
+
+----------------------------------------
