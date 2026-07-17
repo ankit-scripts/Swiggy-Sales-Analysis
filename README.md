@@ -1,11 +1,11 @@
 # Swiggy-Sales-Analysis
 Designed a dimensional data model (Star Schema) and used CTEs, Window Functions, Aggregate Functions, and Joins to clean data and generate business insights on sales, customer behavior, restaurant performance, and ratings.
 
----sql
+
 
 --Data Cleaning & Validation
 --Null Value Check
-
+---sql
 SELECT 
       SUM(CASE WHEN State IS NULL THEN 1 ELSE 0 END) AS "null state",
 	  SUM(CASE WHEN City IS NULL THEN 1 ELSE 0 END) AS "null city",
