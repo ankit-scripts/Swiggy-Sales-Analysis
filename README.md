@@ -31,3 +31,32 @@ FROM swiggy_data;
 - ✅ The dataset is complete and ready for further data cleaning, transformation, and analysis.
   
 <img width="1352" height="144" alt="image" src="https://github.com/user-attachments/assets/a4fad1f4-7a05-4ee2-89c1-31e9366e49e7" />
+
+
+### Blank/Empty String Check
+
+**Objective:**  
+Verify all dimension columns for blank or empty string (`' '`) values that could lead to inaccurate reporting, incorrect filtering, or inconsistent analysis. This validation focuses only on **dimension attributes** (State, City, Restaurant Name, Location, Category, and Dish Name).
+
+**Approach:**  
+Queried the dataset to identify records where any of the dimension columns contained blank or empty string values using the `WHERE` clause with `OR` conditions.
+
+```sql
+SELECT * 
+FROM swiggy_data
+WHERE 
+     State = ' ' OR
+	 City = ' ' OR 
+	 Restaurant_Name = ' ' OR
+	 Location = ' ' OR
+	 Category = ' ' OR
+	 Dish_Name = ' ';
+```
+<img width="1080" height="138" alt="image" src="https://github.com/user-attachments/assets/b263f8b9-db4f-4c5e-a88b-cf5b79ab668b" />
+
+**Measure columns** (such as Price, Rating, and Rating Count) are not included in this check because blank string validation is applicable only to text-based fields.
+
+**Findings:**  
+- ✅ No blank or empty string values were detected in any of the dimension columns.
+- ✅ All dimension attributes are complete and suitable for accurate filtering, grouping, and analysis.
+
