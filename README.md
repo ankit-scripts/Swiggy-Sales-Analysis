@@ -32,6 +32,7 @@ FROM swiggy_data;
   
 <img width="1352" height="144" alt="image" src="https://github.com/user-attachments/assets/a4fad1f4-7a05-4ee2-89c1-31e9366e49e7" />
 
+----------------------------------------
 
 ### Blank/Empty String Check
 
