@@ -116,3 +116,72 @@ DELETE FROM CTE WHERE Row_Num > 1;
 - The dataset is now free of duplicate entries and ready for reliable data modeling and analysis.
 
 ----------------------------------------
+
+
+## Dimensional Modelling (Star Schema)
+
+### Objective
+Transform the cleaned transactional dataset into a **Star Schema** to improve query performance, simplify reporting, and support scalable business intelligence. The model separates descriptive attributes into dimension tables while storing measurable business metrics in a centralized fact table. This design minimizes data redundancy, improves data consistency, and enables efficient filtering, aggregation, and dashboard development.
+
+The following dimension tables were created:
+
+- **dim_date** → Date, Year, Month, Month Name, Quarter, Day, Week
+- **dim_location** → State, City, Location
+- **dim_restaurant** → Restaurant Name
+- **dim_category** → Category (Cuisine)
+- **dim_dish** → Dish Name
+
+The central **fact_swiggy_orders** table stores transactional measures (`Price_INR`, `Rating`, `Rating_Count`) along with foreign keys referencing each dimension table.
+
+### Approach
+- Created separate dimension tables using **surrogate primary keys** generated with `IDENTITY(1,1)` to uniquely identify each dimension record.
+- Extracted distinct values from the cleaned source dataset and loaded them into their respective dimension tables.
+- Designed the fact table to store business measures and foreign keys linking to each dimension, establishing a one-to-many relationship between dimensions and the fact table.
+- Implemented the Star Schema to support faster analytical queries, efficient joins, and simplified reporting in BI tools such as Power BI and Tableau.
+
+```sql
+--Dimension Table
+--Date Table
+CREATE TABLE dim_date (
+        Date_ID INT IDENTITY(1,1) PRIMARY KEY,
+		Full_Date DATE,
+		Year INT,
+		Month INT,
+		Month_Name VARCHAR(30),
+		Quarter INT,
+		Day INT,
+		Week INT
+);
+
+--Dimension Location
+CREATE TABLE dim_location(
+        Location_ID INT IDENTITY(1,1) PRIMARY KEY,
+		State VARCHAR(100),
+		City VARCHAR(100),
+		Location VARCHAR(200)
+);
+
+--Dimension Restaurant
+CREATE TABLE dim_restaurant(
+        Restaurant_ID INT IDENTITY(1,1) PRIMARY KEY,
+		Restaurant_Name VARCHAR(200)
+);
+
+--Dimension Category
+CREATE TABLE dim_category (
+        Category_ID INT IDENTITY(1,1) PRIMARY KEY,
+		Category_Name VARCHAR(200)
+);
+
+--Dimension Category
+CREATE TABLE dim_dish (
+        Dish_ID INT IDENTITY(1,1) PRIMARY KEY,
+		Dish_Name VARCHAR(200)
+);
+```
+
+### Findings
+- Successfully designed and implemented a **Star Schema** consisting of **five dimension tables** and **one central fact table**.
+- Eliminated redundant descriptive data by storing attributes only once within their respective dimension tables.
+- Established primary key–foreign key relationships to maintain referential integrity.
+- Created a scalable and performance-optimized data model suitable for analytical reporting, KPI calculations, and dashboard development.
