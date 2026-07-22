@@ -142,9 +142,7 @@ The schema consists of the following tables:
 Created all dimension tables using **IDENTITY(1,1)** to generate surrogate primary keys, ensuring unique identifiers for every dimension record. These surrogate keys are used as foreign keys in the fact table, improving join performance and maintaining referential integrity. The fact table stores transactional measures while linking to the corresponding dimension records through foreign key relationships, forming a complete Star Schema optimized for BI and analytical workloads.
 
 ```sql
--- ==========================
 -- Dimension Tables
--- ==========================
 
 -- Date Dimension
 CREATE TABLE dim_date (
@@ -184,10 +182,7 @@ CREATE TABLE dim_dish (
     Dish_Name VARCHAR(200)
 );
 
--- ==========================
 -- Fact Table
--- ==========================
-
 CREATE TABLE fact_swiggy_orders (
     Order_ID INT IDENTITY(1,1) PRIMARY KEY,
 
@@ -219,3 +214,95 @@ CREATE TABLE fact_swiggy_orders (
   ----------------------------------------
 
 
+### Populate Dimension & Fact Tables
+
+**Objective:**  
+Load the cleaned dataset into the Star Schema by populating all dimension tables with unique records and inserting transactional data into the fact table. This process establishes relationships between dimensions and measures, creating a structured analytical model for efficient reporting.
+
+**Approach:**  
+Extracted distinct values from the cleaned source dataset to populate each dimension table (`dim_date`, `dim_location`, `dim_restaurant`, `dim_category`, and `dim_dish`). Each dimension record was assigned a surrogate key using `IDENTITY(1,1)`.
+
+The fact table was then populated by joining the cleaned source data with all dimension tables to retrieve their corresponding surrogate keys. Business measures (`Price_INR`, `Rating`, and `Rating_Count`) were stored alongside these foreign keys, ensuring referential integrity and completing the Star Schema.
+
+```sql
+###Populate Dimension Tables
+
+--Date Dimension
+INSERT INTO dim_date (Full_Date, Year, Month, Month_Name, Quarter, Day, Week)
+SELECT DISTINCT
+    Order_Date,
+    YEAR(Order_Date),
+    MONTH(Order_Date),
+    DATENAME(MONTH, Order_Date),
+    DATEPART(QUARTER, Order_Date),
+    DAY(Order_Date),
+    DATEPART(WEEK, Order_Date)
+FROM swiggy_data
+WHERE Order_Date IS NOT NULL;
+
+-- Location Dimension
+INSERT INTO dim_location(State, City, Location)
+SELECT DISTINCT
+    State,
+    City,
+    Location
+FROM swiggy_data;
+
+-- Restaurant Dimension
+INSERT INTO dim_restaurant(Restaurant_Name)
+SELECT DISTINCT Restaurant_Name
+FROM swiggy_data;
+
+-- Category Dimension
+INSERT INTO dim_category(Category_Name)
+SELECT DISTINCT Category
+FROM swiggy_data;
+
+-- Dish Dimension
+INSERT INTO dim_dish(Dish_Name)
+SELECT DISTINCT Dish_Name
+FROM swiggy_data;
+
+
+###Populate Fact Table
+
+INSERT INTO fact_swiggy_orders (
+    Date_ID,
+    Price_INR,
+    Rating,
+    Rating_Count,
+    Location_ID,
+    Restaurant_ID,
+    Category_ID,
+    Dish_ID
+)
+SELECT
+    dd.Date_ID,
+    s.Price_INR,
+    s.Rating,
+    s.Rating_Count,
+    dl.Location_ID,
+    dr.Restaurant_ID,
+    dc.Category_ID,
+    dsh.Dish_ID
+FROM swiggy_data AS s
+JOIN dim_date AS dd
+    ON dd.Full_Date = s.Order_Date
+JOIN dim_location AS dl
+    ON dl.State = s.State
+   AND dl.City = s.City
+   AND dl.Location = s.Location
+JOIN dim_restaurant AS dr
+    ON dr.Restaurant_Name = s.Restaurant_Name
+JOIN dim_category AS dc
+    ON dc.Category_Name = s.Category
+JOIN dim_dish AS dsh
+    ON dsh.Dish_Name = s.Dish_Name;
+```
+
+**Findings:**
+
+- Successfully populated all **5 dimension tables** with unique records from the cleaned dataset.
+- Loaded the **fact table** by resolving surrogate keys from each dimension through joins.
+- Established complete foreign key relationships, ensuring referential integrity across the Star Schema.
+- The dimensional model is fully populated and optimized for analytical queries, KPI calculations, and BI dashboard development.
