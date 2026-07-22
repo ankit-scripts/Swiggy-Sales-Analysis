@@ -225,7 +225,7 @@ Extracted distinct values from the cleaned source dataset to populate each dimen
 The fact table was then populated by joining the cleaned source data with all dimension tables to retrieve their corresponding surrogate keys. Business measures (`Price_INR`, `Rating`, and `Rating_Count`) were stored alongside these foreign keys, ensuring referential integrity and completing the Star Schema.
 
 ```sql
-###Populate Dimension Tables
+**Populate Dimension Tables**
 
 --Date Dimension
 INSERT INTO dim_date (Full_Date, Year, Month, Month_Name, Quarter, Day, Week)
