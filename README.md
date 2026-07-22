@@ -120,68 +120,102 @@ DELETE FROM CTE WHERE Row_Num > 1;
 
 ## Dimensional Modelling (Star Schema)
 
-### Objective
-Transform the cleaned transactional dataset into a **Star Schema** to improve query performance, simplify reporting, and support scalable business intelligence. The model separates descriptive attributes into dimension tables while storing measurable business metrics in a centralized fact table. This design minimizes data redundancy, improves data consistency, and enables efficient filtering, aggregation, and dashboard development.
+**Objective:**  
+Design and implement a **Star Schema** to optimize analytical query performance, improve data organization, and support scalable reporting. The model separates descriptive attributes into **dimension tables** and stores measurable business metrics in a centralized **fact table**, reducing data redundancy and enabling efficient joins, aggregations, and dashboard development.
 
-The following dimension tables were created:
+The schema consists of the following tables:
 
-- **dim_date** → Date, Year, Month, Month Name, Quarter, Day, Week
-- **dim_location** → State, City, Location
-- **dim_restaurant** → Restaurant Name
-- **dim_category** → Category (Cuisine)
-- **dim_dish** → Dish Name
+- **Dimension Tables**
+  - `dim_date` → Date attributes (Year, Month, Quarter, Week, Day)
+  - `dim_location` → State, City, Location
+  - `dim_restaurant` → Restaurant Name
+  - `dim_category` → Food Category/Cuisine
+  - `dim_dish` → Dish Name
 
-The central **fact_swiggy_orders** table stores transactional measures (`Price_INR`, `Rating`, `Rating_Count`) along with foreign keys referencing each dimension table.
+- **Fact Table**
+  - `fact_swiggy_orders` → Stores business measures (`Price_INR`, `Rating`, `Rating_Count`) along with foreign keys referencing each dimension table.
 
-### Approach
-- Created separate dimension tables using **surrogate primary keys** generated with `IDENTITY(1,1)` to uniquely identify each dimension record.
-- Extracted distinct values from the cleaned source dataset and loaded them into their respective dimension tables.
-- Designed the fact table to store business measures and foreign keys linking to each dimension, establishing a one-to-many relationship between dimensions and the fact table.
-- Implemented the Star Schema to support faster analytical queries, efficient joins, and simplified reporting in BI tools such as Power BI and Tableau.
+---
+
+**Approach:**
+
+Created all dimension tables using **IDENTITY(1,1)** to generate surrogate primary keys, ensuring unique identifiers for every dimension record. These surrogate keys are used as foreign keys in the fact table, improving join performance and maintaining referential integrity. The fact table stores transactional measures while linking to the corresponding dimension records through foreign key relationships, forming a complete Star Schema optimized for BI and analytical workloads.
 
 ```sql
---Dimension Table
---Date Table
+-- ==========================
+-- Dimension Tables
+-- ==========================
+
+-- Date Dimension
 CREATE TABLE dim_date (
-        Date_ID INT IDENTITY(1,1) PRIMARY KEY,
-		Full_Date DATE,
-		Year INT,
-		Month INT,
-		Month_Name VARCHAR(30),
-		Quarter INT,
-		Day INT,
-		Week INT
+    Date_ID INT IDENTITY(1,1) PRIMARY KEY,
+    Full_Date DATE,
+    Year INT,
+    Month INT,
+    Month_Name VARCHAR(30),
+    Quarter INT,
+    Day INT,
+    Week INT
 );
 
---Dimension Location
-CREATE TABLE dim_location(
-        Location_ID INT IDENTITY(1,1) PRIMARY KEY,
-		State VARCHAR(100),
-		City VARCHAR(100),
-		Location VARCHAR(200)
+-- Location Dimension
+CREATE TABLE dim_location (
+    Location_ID INT IDENTITY(1,1) PRIMARY KEY,
+    State VARCHAR(100),
+    City VARCHAR(100),
+    Location VARCHAR(200)
 );
 
---Dimension Restaurant
-CREATE TABLE dim_restaurant(
-        Restaurant_ID INT IDENTITY(1,1) PRIMARY KEY,
-		Restaurant_Name VARCHAR(200)
+-- Restaurant Dimension
+CREATE TABLE dim_restaurant (
+    Restaurant_ID INT IDENTITY(1,1) PRIMARY KEY,
+    Restaurant_Name VARCHAR(200)
 );
 
---Dimension Category
+-- Category Dimension
 CREATE TABLE dim_category (
-        Category_ID INT IDENTITY(1,1) PRIMARY KEY,
-		Category_Name VARCHAR(200)
+    Category_ID INT IDENTITY(1,1) PRIMARY KEY,
+    Category_Name VARCHAR(200)
 );
 
---Dimension Category
+-- Dish Dimension
 CREATE TABLE dim_dish (
-        Dish_ID INT IDENTITY(1,1) PRIMARY KEY,
-		Dish_Name VARCHAR(200)
+    Dish_ID INT IDENTITY(1,1) PRIMARY KEY,
+    Dish_Name VARCHAR(200)
+);
+
+-- ==========================
+-- Fact Table
+-- ==========================
+
+CREATE TABLE fact_swiggy_orders (
+    Order_ID INT IDENTITY(1,1) PRIMARY KEY,
+
+    Date_ID INT,
+    Price_INR DECIMAL(10,2),
+    Rating DECIMAL(4,2),
+    Rating_Count INT,
+
+    Location_ID INT,
+    Restaurant_ID INT,
+    Category_ID INT,
+    Dish_ID INT,
+
+    FOREIGN KEY (Date_ID) REFERENCES dim_date(Date_ID),
+    FOREIGN KEY (Location_ID) REFERENCES dim_location(Location_ID),
+    FOREIGN KEY (Restaurant_ID) REFERENCES dim_restaurant(Restaurant_ID),
+    FOREIGN KEY (Category_ID) REFERENCES dim_category(Category_ID),
+    FOREIGN KEY (Dish_ID) REFERENCES dim_dish(Dish_ID)
 );
 ```
 
-### Findings
-- Successfully designed and implemented a **Star Schema** consisting of **five dimension tables** and **one central fact table**.
-- Eliminated redundant descriptive data by storing attributes only once within their respective dimension tables.
-- Established primary key–foreign key relationships to maintain referential integrity.
-- Created a scalable and performance-optimized data model suitable for analytical reporting, KPI calculations, and dashboard development.
+**Findings:**
+
+- Implemented a **Star Schema** consisting of **5 dimension tables** and **1 fact table**.
+- Generated surrogate keys using `IDENTITY(1,1)` for efficient joins and simplified key management.
+- Established foreign key relationships to maintain referential integrity between dimensions and the fact table.
+- Created a scalable, normalized data model that improves query performance and supports efficient reporting and dashboard development.
+  
+  ----------------------------------------
+
+
