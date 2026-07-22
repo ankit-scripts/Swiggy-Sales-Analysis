@@ -264,7 +264,7 @@ SELECT DISTINCT Dish_Name
 FROM swiggy_data;
 
 
-###Populate Fact Table
+Populate Fact Table
 
 INSERT INTO fact_swiggy_orders (
     Date_ID,
