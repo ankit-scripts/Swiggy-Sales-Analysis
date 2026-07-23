@@ -322,7 +322,7 @@ Calculated the following KPIs from the `fact_swiggy_orders` table:
 - **Average Dish Price:** Computed the average selling price of dishes using `AVG()` and formatted the result to two decimal places.
 - **Average Rating:** Calculated the overall average customer rating using the `AVG()` aggregate function.
 
-###Basic KPIs
+### Basic KPIs
 
 ```sql
 -- Total Orders
