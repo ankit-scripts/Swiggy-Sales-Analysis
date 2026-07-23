@@ -306,3 +306,60 @@ JOIN dim_dish AS dsh
 - Loaded the **fact table** by resolving surrogate keys from each dimension through joins.
 - Established complete foreign key relationships, ensuring referential integrity across the Star Schema.
 - The dimensional model is fully populated and optimized for analytical queries, KPI calculations, and BI dashboard development.
+
+
+
+## KPI Development
+
+**Objective:**  
+Develop key business performance indicators (KPIs) from the Star Schema to provide a high-level overview of sales performance. These KPIs serve as the foundation for business reporting and dashboard development, enabling quick monitoring of order volume, revenue, pricing, and customer satisfaction.
+
+**Approach:**  
+Calculated the following KPIs from the `fact_swiggy_orders` table:
+
+- **Total Orders:** Counted all transaction records using `COUNT(*)`.
+- **Total Revenue (INR Million):** Summed `Price_INR` and converted the result into **Indian Rupees (Millions)** by dividing the total by **1,000,000**. The `FORMAT()` function was used to display the value with two decimal places and append the unit **"INR Million"** for better readability.
+- **Average Dish Price:** Computed the average selling price of dishes using `AVG()` and formatted the result to two decimal places.
+- **Average Rating:** Calculated the overall average customer rating using the `AVG()` aggregate function.
+
+##Basic KPIs
+
+```sql
+-- Total Orders
+SELECT COUNT(*) AS Total_Orders
+FROM fact_swiggy_orders;
+```
+<img width="296" height="114" alt="image" src="https://github.com/user-attachments/assets/fa33d637-e553-45e1-bb21-c1ab95f447df" />
+
+```sql
+-- Total Revenue (INR Million)
+SELECT
+    FORMAT(SUM(CONVERT(FLOAT, Price_INR)) / 1000000, 'N2') + ' INR Million'
+    AS Total_Revenue
+FROM fact_swiggy_orders;
+```
+<img width="280" height="110" alt="image" src="https://github.com/user-attachments/assets/66e57c5c-acac-4199-89c2-894455da46c8" />
+
+```sql
+-- Average Dish Price
+SELECT
+    FORMAT(AVG(CONVERT(FLOAT, Price_INR)), 'N2') + ' INR'
+    AS Average_Dish_Price
+FROM fact_swiggy_orders;
+```
+<img width="280" height="110" alt="image" src="https://github.com/user-attachments/assets/ab349fad-e696-4b8b-8dd3-173f60c65091" />
+
+```sql
+-- Average Rating
+SELECT
+    AVG(Rating) AS Average_Rating
+FROM fact_swiggy_orders;
+```
+<img width="316" height="136" alt="image" src="https://github.com/user-attachments/assets/f7ae2744-f788-400c-8ba0-ddf981276624" />
+
+
+**Findings:**
+
+- Computed four core business KPIs from the fact table.
+- Standardized revenue reporting by converting values into **INR Million**, making large financial figures easier to interpret.
+- Generated summary metrics that can be directly integrated into Power BI, Tableau, or other BI dashboards for executive reporting.
