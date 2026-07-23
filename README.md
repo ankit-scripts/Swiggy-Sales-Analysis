@@ -331,6 +331,7 @@ FROM fact_swiggy_orders;
 ```
 <img width="296" height="114" alt="image" src="https://github.com/user-attachments/assets/fa33d637-e553-45e1-bb21-c1ab95f447df" />
 
+
 ```sql
 -- Total Revenue (INR Million)
 SELECT
@@ -339,6 +340,7 @@ SELECT
 FROM fact_swiggy_orders;
 ```
 <img width="280" height="110" alt="image" src="https://github.com/user-attachments/assets/66e57c5c-acac-4199-89c2-894455da46c8" />
+
 
 ```sql
 -- Average Dish Price
@@ -349,13 +351,14 @@ FROM fact_swiggy_orders;
 ```
 <img width="280" height="110" alt="image" src="https://github.com/user-attachments/assets/ab349fad-e696-4b8b-8dd3-173f60c65091" />
 
+
 ```sql
 -- Average Rating
 SELECT
     AVG(Rating) AS Average_Rating
 FROM fact_swiggy_orders;
 ```
-<img width="316" height="136" alt="image" src="https://github.com/user-attachments/assets/f7ae2744-f788-400c-8ba0-ddf981276624" />
+<img width="278" height="112" alt="image" src="https://github.com/user-attachments/assets/ec4231fd-892d-4443-bd12-da052e8a43e8" />
 
 
 **Findings:**
