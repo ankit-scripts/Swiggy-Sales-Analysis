@@ -142,7 +142,7 @@ The schema consists of the following tables:
 Created all dimension tables using **IDENTITY(1,1)** to generate surrogate primary keys, ensuring unique identifiers for every dimension record. These surrogate keys are used as foreign keys in the fact table, improving join performance and maintaining referential integrity. The fact table stores transactional measures while linking to the corresponding dimension records through foreign key relationships, forming a complete Star Schema optimized for BI and analytical workloads.
 
 ```sql
--- Dimension Tables
+Dimension Tables
 
 -- Date Dimension
 CREATE TABLE dim_date (
@@ -307,7 +307,7 @@ JOIN dim_dish AS dsh
 - Established complete foreign key relationships, ensuring referential integrity across the Star Schema.
 - The dimensional model is fully populated and optimized for analytical queries, KPI calculations, and BI dashboard development.
 
-
+  ----------------------------------------
 
 ## KPI Development
 
@@ -322,7 +322,7 @@ Calculated the following KPIs from the `fact_swiggy_orders` table:
 - **Average Dish Price:** Computed the average selling price of dishes using `AVG()` and formatted the result to two decimal places.
 - **Average Rating:** Calculated the overall average customer rating using the `AVG()` aggregate function.
 
-##Basic KPIs
+###Basic KPIs
 
 ```sql
 -- Total Orders
