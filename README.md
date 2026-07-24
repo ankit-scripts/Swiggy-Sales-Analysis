@@ -452,21 +452,91 @@ ORDER BY DATENAME(WEEKDAY, d.Full_date);
 
 Evaluated geographical performance to identify high-demand markets and revenue-generating regions.
 
-### Analysis Performed
+**Analysis Performed**
 - Top 10 cities by total orders
-- Revenue contribution by state
+```sql
+SELECT TOP 10
+       dl.City,
+	   COUNT(*) AS Top_Cities_by_Orders
+FROM fact_swiggy_orders AS f
+JOIN dim_location AS dl
+ON dl.Location_ID = f.Location_ID
+GROUP BY dl.City
+ORDER BY COUNT(*) DESC;
+```
+<img width="404" height="366" alt="image" src="https://github.com/user-attachments/assets/2258741e-4a9d-4e1a-b388-f3873fdd940f" />
 
----
+- Revenue contribution by state
+```sql
+SELECT
+       dl.State,
+	   SUM(f.Price_INR) AS Top_Revenue_States
+FROM fact_swiggy_orders AS f
+JOIN dim_location AS dl
+ON dl.Location_ID = f.Location_ID
+GROUP BY dl.State
+ORDER BY SUM(f.Price_INR) DESC;
+```
+<img width="466" height="530" alt="image" src="https://github.com/user-attachments/assets/456680bb-93be-4d31-bd8a-0481a4965779" />
+
 
 ## Food Performance Analysis
 
 Measured restaurant and cuisine performance to understand customer food preferences.
 
-### Analysis Performed
+**Analysis Performed**
 - Top 10 restaurants by revenue
+```sql
+SELECT TOP 10
+       r.Restaurant_Name,
+	   SUM(f.Price_INR) AS Top_Restaurants_by_Orders
+FROM fact_swiggy_orders AS f
+JOIN dim_restaurant AS r
+ON r.Restaurant_ID = f.Restaurant_ID
+GROUP BY r.Restaurant_Name
+ORDER BY SUM(f.Price_INR) DESC;
+```
+<img width="660" height="360" alt="image" src="https://github.com/user-attachments/assets/6e65f60a-61c2-40b7-b8a6-14da73172614" />
+
 - Most popular food categories
+```sql
+SELECT 
+       c.Category_Name,
+	   COUNT(*) AS Top_Categories 
+FROM fact_swiggy_orders AS f
+JOIN dim_category AS c
+ON c.Category_ID = f.Category_ID
+GROUP BY  c.Category_Name
+ORDER BY Top_Categories  DESC;
+```
+<img width="540" height="530" alt="image" src="https://github.com/user-attachments/assets/d20882be-3d79-434d-ac62-2d78032ef9d5" />
+
 - Most ordered dishes
+```sql
+SELECT 
+       d.Dish_Name,
+	   COUNT(*) AS Order_Count
+FROM fact_swiggy_orders AS f
+JOIN dim_dish AS d
+ON d.Dish_ID = f.Dish_ID
+GROUP BY  d.Dish_Name
+ORDER BY Order_Count  DESC;
+```
+<img width="396" height="532" alt="image" src="https://github.com/user-attachments/assets/008bfd8d-8675-482c-a28f-631e2b8a822a" />
+
 - Cuisine performance based on total orders and average customer rating
+```sql
+SELECT
+    c.Category_ID,
+    COUNT(*) AS total_orders,
+    AVG(f.rating) AS avg_rating
+FROM fact_swiggy_orders AS f
+JOIN dim_category AS c 
+ON f.Category_ID = c.Category_ID
+GROUP BY c.Category_ID
+ORDER BY total_orders DESC;
+```
+<img width="416" height="532" alt="image" src="https://github.com/user-attachments/assets/5066e3d8-3550-480c-9596-79587f945d08" />
 
 ---
 
@@ -474,12 +544,35 @@ Measured restaurant and cuisine performance to understand customer food preferen
 
 Segmented customer orders into predefined spending buckets using a `CASE` expression to understand purchasing behavior.
 
-### Price Buckets
+**Price Buckets**
 - Under ₹100
 - ₹100–199
 - ₹200–299
 - ₹300–499
 - ₹500+
+```sql
+SELECT 
+     CASE 
+	     WHEN CONVERT(FLOAT, Price_INR) < 100 THEN 'Under 100'
+		 WHEN CONVERT(FLOAT, Price_INR) BETWEEN 100 AND 199 THEN '100 - 199'
+		 WHEN CONVERT(FLOAT, Price_INR) BETWEEN 200 AND 299 THEN '200 - 299'
+		 WHEN CONVERT(FLOAT, Price_INR) BETWEEN 300 AND 499 THEN '300 - 499'
+		 ELSE '500+'
+     END AS Price_Range,
+     COUNT(*) AS Total_Orders
+FROM fact_swiggy_orders
+GROUP BY 
+     CASE 
+	     WHEN CONVERT(FLOAT, Price_INR) < 100 THEN 'Under 100'
+		 WHEN CONVERT(FLOAT, Price_INR) BETWEEN 100 AND 199 THEN '100 - 199'
+		 WHEN CONVERT(FLOAT, Price_INR) BETWEEN 200 AND 299 THEN '200 - 299'
+		 WHEN CONVERT(FLOAT, Price_INR) BETWEEN 300 AND 499 THEN '300 - 499'
+		 ELSE '500+'
+    END
+ORDER BY Total_Orders DESC;
+```
+<img width="332" height="222" alt="image" src="https://github.com/user-attachments/assets/95bbb569-e2a5-41ba-8e03-d9f92f4eb7c3" />
+
 
 The analysis calculates the total number of orders within each spending range to identify the most common customer spending patterns.
 
@@ -489,9 +582,18 @@ The analysis calculates the total number of orders within each spending range to
 
 Analyzed customer rating distribution to evaluate overall food quality and customer satisfaction.
 
-### Analysis Performed
+**Analysis Performed**
 - Distribution of ratings (1–5)
 - Total number of orders received for each rating level
+```sql
+SELECT
+      Rating,
+	  COUNT(*) AS Total_Ratings
+FROM fact_swiggy_orders
+GROUP BY Rating
+ORDER BY Rating DESC;
+```
+<img width="276" height="532" alt="image" src="https://github.com/user-attachments/assets/3aff893f-d55b-4a66-ac95-840339ddafe3" />
 
 ---
 
