@@ -366,3 +366,141 @@ FROM fact_swiggy_orders;
 - Computed four core business KPIs from the fact table.
 - Standardized revenue reporting by converting values into **INR Million**, making large financial figures easier to interpret.
 - Generated summary metrics that can be directly integrated into Power BI, Tableau, or other BI dashboards for executive reporting.
+
+
+ ----------------------------------------
+
+
+ ## Deep-Dive Business Analysis
+
+**Objective:**  
+Perform detailed business analysis on the Star Schema to uncover trends in customer ordering behavior, revenue distribution, restaurant performance, cuisine popularity, spending patterns, and customer ratings. These analyses provide actionable insights that support strategic decision-making, operational planning, and business growth.
+
+**Approach:**  
+Executed analytical SQL queries by joining the `fact_swiggy_orders` table with the relevant dimension tables. Applied aggregate functions (`COUNT()`, `SUM()`, `AVG()`), conditional logic (`CASE`), and sorting techniques (`GROUP BY`, `ORDER BY`, `TOP`) to identify business trends across multiple dimensions.
+
+---
+
+### Date-Based Analysis
+
+Analyzed ordering patterns over time to identify seasonal trends and customer purchasing behavior.
+
+### Analysis Performed
+- Monthly order trends
+  
+```sql
+SELECT
+      d.Year,
+      d.Month,
+      d.Month_Name,
+      COUNT(*) AS Total_Monthly_Orders
+FROM fact_swiggy_orders f
+  JOIN dim_date d ON f.date_id = d.date_id
+GROUP BY 
+      d.Year,
+      d.Month,
+      d.Month_Name
+ORDER BY COUNT(*) DESC;
+```
+<img width="540" height="310" alt="image" src="https://github.com/user-attachments/assets/d6b52dc3-cc06-4027-95fe-2431fcb10905" />
+
+- Quarterly order trends
+```sql
+SELECT
+      d.Year,
+      d.Quarter,
+      COUNT(*) AS Total_Quarterly_Orders
+FROM fact_swiggy_orders f
+  JOIN dim_date d ON f.date_id = d.date_id
+GROUP BY 
+      d.Year,
+      d.Quarter
+ORDER BY COUNT(*) DESC;
+```
+<img width="430" height="172" alt="image" src="https://github.com/user-attachments/assets/f5c4bec6-5dcd-4493-bf76-e08abe92a4ee" />
+
+- Year-wise order growth
+```sql
+SELECT
+      d.Year,
+      COUNT(*) AS Total_Yearly_Orders
+FROM fact_swiggy_orders f
+  JOIN dim_date d ON f.date_id = d.date_id
+GROUP BY 
+      d.Year
+ORDER BY COUNT(*) DESC;
+```
+<img width="320" height="114" alt="image" src="https://github.com/user-attachments/assets/30b9912d-475b-4353-a112-a514f1931b7f" />
+
+- Day-of-week ordering patterns
+```sql
+SELECT
+      DATENAME(WEEKDAY, d.Full_date) AS Day_Name,
+      COUNT(*) AS Orders_BY_Day_of_week
+FROM fact_swiggy_orders f
+  JOIN dim_date d ON f.date_id = d.date_id
+GROUP BY 
+      DATENAME(WEEKDAY, d.Full_date), 
+	  DATEPART(WEEKDAY, d.Full_date) 
+ORDER BY DATENAME(WEEKDAY, d.Full_date);
+```
+<img width="430" height="284" alt="image" src="https://github.com/user-attachments/assets/985b4496-a321-4125-96ac-8f20c6d9780c" />
+
+---
+
+### Location-Based Analysis
+
+Evaluated geographical performance to identify high-demand markets and revenue-generating regions.
+
+### Analysis Performed
+- Top 10 cities by total orders
+- Revenue contribution by state
+
+---
+
+## Food Performance Analysis
+
+Measured restaurant and cuisine performance to understand customer food preferences.
+
+### Analysis Performed
+- Top 10 restaurants by revenue
+- Most popular food categories
+- Most ordered dishes
+- Cuisine performance based on total orders and average customer rating
+
+---
+
+## Customer Spending Analysis
+
+Segmented customer orders into predefined spending buckets using a `CASE` expression to understand purchasing behavior.
+
+### Price Buckets
+- Under ₹100
+- ₹100–199
+- ₹200–299
+- ₹300–499
+- ₹500+
+
+The analysis calculates the total number of orders within each spending range to identify the most common customer spending patterns.
+
+---
+
+## Ratings Analysis
+
+Analyzed customer rating distribution to evaluate overall food quality and customer satisfaction.
+
+### Analysis Performed
+- Distribution of ratings (1–5)
+- Total number of orders received for each rating level
+
+---
+
+**Findings**
+
+- Identified monthly, quarterly, yearly, and weekday ordering trends.
+- Determined the highest-performing cities and states based on orders and revenue.
+- Ranked the top-performing restaurants, cuisines, and dishes.
+- Segmented customers into spending buckets to understand purchasing behavior.
+- Evaluated cuisine popularity using both order volume and average ratings.
+- Analyzed customer rating distribution to measure overall satisfaction.
+- Generated business insights that can be directly integrated into interactive BI dashboards for executive reporting and strategic decision-making.
