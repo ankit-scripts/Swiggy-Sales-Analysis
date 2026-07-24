@@ -25,12 +25,16 @@ SELECT
 	  SUM(CASE WHEN Rating_Count IS NULL THEN 1 ELSE 0 END) AS "null rating count"
 FROM swiggy_data;
 ```
+<img width="1352" height="144" alt="image" src="https://github.com/user-attachments/assets/a4fad1f4-7a05-4ee2-89c1-31e9366e49e7" />
+
+<br>
+<br>
 
 **Findings:**  
 - No NULL values were found in any of the selected columns.
 - The dataset is complete and ready for further data cleaning, transformation, and analysis.
   
-<img width="1352" height="144" alt="image" src="https://github.com/user-attachments/assets/a4fad1f4-7a05-4ee2-89c1-31e9366e49e7" />
+
 
 ----------------------------------------
 
@@ -54,6 +58,9 @@ WHERE
 	 Dish_Name = ' ';
 ```
 <img width="1080" height="138" alt="image" src="https://github.com/user-attachments/assets/b263f8b9-db4f-4c5e-a88b-cf5b79ab668b" />
+
+<br>
+<br>
 
 **Measure columns** (such as Price, Rating, and Rating Count) are not included in this check because blank string validation is applicable only to text-based fields.
 
@@ -83,6 +90,9 @@ GROUP BY
 HAVING COUNT(*) > 1;
 ```
 <img width="2374" height="894" alt="image" src="https://github.com/user-attachments/assets/8629f16f-6948-4397-9b7c-5881ced1b59a" />
+
+<br>
+<br>
 
 **Findings:**  
 - **29 duplicate records** were identified in the dataset.
@@ -331,6 +341,8 @@ FROM fact_swiggy_orders;
 ```
 <img width="296" height="114" alt="image" src="https://github.com/user-attachments/assets/fa33d637-e553-45e1-bb21-c1ab95f447df" />
 
+<br>
+<br>
 
 ```sql
 -- Total Revenue (INR Million)
@@ -341,6 +353,8 @@ FROM fact_swiggy_orders;
 ```
 <img width="280" height="110" alt="image" src="https://github.com/user-attachments/assets/66e57c5c-acac-4199-89c2-894455da46c8" />
 
+<br>
+<br>
 
 ```sql
 -- Average Dish Price
@@ -351,6 +365,8 @@ FROM fact_swiggy_orders;
 ```
 <img width="280" height="110" alt="image" src="https://github.com/user-attachments/assets/ab349fad-e696-4b8b-8dd3-173f60c65091" />
 
+<br>
+<br>
 
 ```sql
 -- Average Rating
@@ -360,6 +376,8 @@ FROM fact_swiggy_orders;
 ```
 <img width="278" height="112" alt="image" src="https://github.com/user-attachments/assets/ec4231fd-892d-4443-bd12-da052e8a43e8" />
 
+<br>
+<br>
 
 **Findings:**
 
@@ -404,6 +422,9 @@ ORDER BY COUNT(*) DESC;
 ```
 <img width="540" height="310" alt="image" src="https://github.com/user-attachments/assets/d6b52dc3-cc06-4027-95fe-2431fcb10905" />
 
+<br>
+<br>
+
 - Quarterly order trends
 ```sql
 SELECT
@@ -419,6 +440,9 @@ ORDER BY COUNT(*) DESC;
 ```
 <img width="430" height="172" alt="image" src="https://github.com/user-attachments/assets/f5c4bec6-5dcd-4493-bf76-e08abe92a4ee" />
 
+<br>
+<br>
+
 - Year-wise order growth
 ```sql
 SELECT
@@ -431,6 +455,9 @@ GROUP BY
 ORDER BY COUNT(*) DESC;
 ```
 <img width="320" height="114" alt="image" src="https://github.com/user-attachments/assets/30b9912d-475b-4353-a112-a514f1931b7f" />
+
+<br>
+<br>
 
 - Day-of-week ordering patterns
 ```sql
@@ -445,6 +472,9 @@ GROUP BY
 ORDER BY DATENAME(WEEKDAY, d.Full_date);
 ```
 <img width="430" height="284" alt="image" src="https://github.com/user-attachments/assets/985b4496-a321-4125-96ac-8f20c6d9780c" />
+
+<br>
+<br>
 
 ---
 
@@ -466,6 +496,9 @@ ORDER BY COUNT(*) DESC;
 ```
 <img width="404" height="366" alt="image" src="https://github.com/user-attachments/assets/2258741e-4a9d-4e1a-b388-f3873fdd940f" />
 
+<br>
+<br>
+
 - Revenue contribution by state
 ```sql
 SELECT
@@ -479,6 +512,8 @@ ORDER BY SUM(f.Price_INR) DESC;
 ```
 <img width="466" height="530" alt="image" src="https://github.com/user-attachments/assets/456680bb-93be-4d31-bd8a-0481a4965779" />
 
+<br>
+<br>
 
 ## Food Performance Analysis
 
@@ -498,6 +533,9 @@ ORDER BY SUM(f.Price_INR) DESC;
 ```
 <img width="660" height="360" alt="image" src="https://github.com/user-attachments/assets/6e65f60a-61c2-40b7-b8a6-14da73172614" />
 
+<br>
+<br>
+
 - Most popular food categories
 ```sql
 SELECT 
@@ -510,6 +548,9 @@ GROUP BY  c.Category_Name
 ORDER BY Top_Categories  DESC;
 ```
 <img width="540" height="530" alt="image" src="https://github.com/user-attachments/assets/d20882be-3d79-434d-ac62-2d78032ef9d5" />
+
+<br>
+<br>
 
 - Most ordered dishes
 ```sql
@@ -524,6 +565,9 @@ ORDER BY Order_Count  DESC;
 ```
 <img width="396" height="532" alt="image" src="https://github.com/user-attachments/assets/008bfd8d-8675-482c-a28f-631e2b8a822a" />
 
+<br>
+<br>
+
 - Cuisine performance based on total orders and average customer rating
 ```sql
 SELECT
@@ -537,6 +581,9 @@ GROUP BY c.Category_ID
 ORDER BY total_orders DESC;
 ```
 <img width="416" height="532" alt="image" src="https://github.com/user-attachments/assets/5066e3d8-3550-480c-9596-79587f945d08" />
+
+<br>
+<br>
 
 ---
 
@@ -572,7 +619,6 @@ GROUP BY
 ORDER BY Total_Orders DESC;
 ```
 <img width="332" height="222" alt="image" src="https://github.com/user-attachments/assets/95bbb569-e2a5-41ba-8e03-d9f92f4eb7c3" />
-
 
 The analysis calculates the total number of orders within each spending range to identify the most common customer spending patterns.
 
